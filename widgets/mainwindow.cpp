@@ -374,8 +374,7 @@ void MainWindow::createToolbars() {
     loaderProgress->setAlignment(Qt::AlignCenter);
     QObject::connect(&Loader::Controller::singleton(), &Loader::Controller::progress, this, &MainWindow::updateLoaderProgress);
 
-    LayerDialogWidget* layerDialogWidget = new LayerDialogWidget(this);
-    createToolToggleButton(*layerDialogWidget, ":/resources/icons/preferences.png", "Layers");
+    createToolToggleButton(widgetContainer.layerDialogWidget, ":/resources/icons/preferences.png", "Layers");
 
     // segmentation task mode toolbar
     auto prevBtn = new QPushButton("< Last");
@@ -1239,6 +1238,7 @@ void MainWindow::loadSettings() {
     widgetContainer.pythonInterpreterWidget.loadSettings();
     widgetContainer.pythonPropertyWidget.loadSettings();
     widgetContainer.snapshotWidget.loadSettings();
+    widgetContainer.layerDialogWidget.layerLoadWidget.loadSettings();
 
     show();
     activateWindow();// prevent mainwin in background in gnome when other widgets are also visible
