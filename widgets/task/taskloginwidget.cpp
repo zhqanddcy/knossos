@@ -48,7 +48,7 @@ TaskLoginWidget::TaskLoginWidget(QWidget * parent) : QDialog(parent) {
     Network::singleton().setCookies(settings.value(HEIDELBRAIN_COOKIES).toList());
     settings.endGroup();
 
-    urlField.setText(host);
+    urlField.setText(host.toString());
     passwordField.setEchoMode(QLineEdit::Password);
 
     line.setFrameShape(QFrame::HLine);
@@ -71,15 +71,15 @@ TaskLoginWidget::TaskLoginWidget(QWidget * parent) : QDialog(parent) {
 }
 
 void TaskLoginWidget::saveSettings() {
-    if (!host.startsWith("http://")) {//qnam cannot handle url without protocol
-        host = "http://" + host;
+    if (!host.scheme().isEmpty()) {//qnam cannot handle url without protocol
+        host.setScheme("http");
     }
-    if (!host.endsWith("/")) {//cookies only apply with slash
-        host += "/";
+    if (!host.path().endsWith("/")) {//cookies only apply with slash
+//        host.setPath(host.path() + "/");
     }
     QSettings settings;
     settings.beginGroup(HEIDELBRAIN_INTEGRATION);
-    settings.setValue(HEIDELBRAIN_HOST, host);
+    settings.setValue(HEIDELBRAIN_HOST, host.toString());
     settings.setValue(HEIDELBRAIN_COOKIES, Network::singleton().getCookiesForHost(host));
     settings.endGroup();
 }

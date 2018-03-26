@@ -47,7 +47,7 @@ Network::Network(const QObject *) {
     manager.setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);// default is manual redirect
 }
 
-QVariantList Network::getCookiesForHost(const QString & host) {
+QVariantList Network::getCookiesForHost(const QUrl & host) {
     QVariantList cookies;
     for (const auto & cookie : cookieJar.cookiesForUrl(host)) {
         cookies.append(cookie.toRawForm());
@@ -85,6 +85,7 @@ std::pair<int, int> Network::checkOnlineMags(const QUrl & url) {
                 highestAvailableMag = std::max(highestAvailableMag, currMag);
             }
             if (--downloadCounter == 0) {// exit event loop after last download finished
+                qDebug() << reply.errorString() << reply.readAll();
                 pause.exit();
             }
         });
