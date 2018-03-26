@@ -2066,6 +2066,8 @@ void ViewportBase::renderSkeleton(const RenderOptions &options) {
     //tdItem: test culling under different conditions!
     //if(viewportType == VIEWPORT_SKELETON) glEnable(GL_CULL_FACE);
 
+    glMatrixMode(GL_MODELVIEW);
+
     glPushMatrix();
 
     if(state->viewerState->regenVertBuffer) {
@@ -2185,6 +2187,23 @@ void ViewportBase::renderSkeleton(const RenderOptions &options) {
         }
     }
 
+    glTranslatef(0.5, 0.5, 0.5);
+
+    GLfloat modelview_mat[4][4];
+    glGetFloatv(GL_MODELVIEW_MATRIX, &modelview_mat[0][0]);
+    GLfloat projection_mat[4][4];
+    glGetFloatv(GL_PROJECTION_MATRIX, &projection_mat[0][0]);
+
+    GLfloat mviewport[4];
+    glGetFloatv(GL_VIEWPORT, &mviewport[0]);
+
+    sphereShader.bind();
+    sphereShader.setUniformValue("modelview_matrix", modelview_mat);
+    sphereShader.setUniformValue("projection_matrix", projection_mat);
+
+    QVector4D tmp(mviewport[0], mviewport[1], mviewport[2], mviewport[3]);
+    sphereShader.setUniformValue("viewport", tmp);
+
     // lighting isn’t really applicable to lines and points
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
@@ -2219,7 +2238,10 @@ void ViewportBase::renderSkeleton(const RenderOptions &options) {
 
     /* draw all nodes */
     state->viewerState->pointVertBuffer.vertex_buffer.bind();
-    glVertexPointer(3, GL_FLOAT, 0, nullptr);
+    //glVertexPointer(3, GL_FLOAT, 0, nullptr);
+    int vertexLocation = sphereShader.attributeLocation("vertex");
+    sphereShader.enableAttributeArray(vertexLocation);
+    sphereShader.setAttributeBuffer(vertexLocation, GL_FLOAT, 0, 3);
     state->viewerState->pointVertBuffer.vertex_buffer.release();
 
     if(options.nodePicking) {
@@ -2231,12 +2253,16 @@ void ViewportBase::renderSkeleton(const RenderOptions &options) {
             glColorPointer(4, GL_UNSIGNED_BYTE, 0, state->viewerState->colorPickingBuffer64.data());
         }
     } else {
-        state->viewerState->pointVertBuffer.color_buffer.bind();
-        glColorPointer(4, GL_UNSIGNED_BYTE, 0, nullptr);
-        state->viewerState->pointVertBuffer.color_buffer.release();
+        //state->viewerState->pointVertBuffer.color_buffer.bind();
+        //glColorPointer(4, GL_UNSIGNED_BYTE, 0, nullptr);
+        //state->viewerState->pointVertBuffer.color_buffer.release();
     }
 
     glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(state->viewerState->pointVertBuffer.vertices.size()));
+
+    sphereShader.disableAttributeArray(vertexLocation);
+
+    sphereShader.release();
 
     glDisableClientState(GL_COLOR_ARRAY);
     glDisableClientState(GL_VERTEX_ARRAY);
