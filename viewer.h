@@ -60,6 +60,15 @@ enum class RotationCenter {
     CurrentPosition
 };
 
+struct LayerRenderSettings {
+    QString layerName{"unnamed"};
+    bool visible{true};
+    float opacity{1.0f};
+    float rangeDelta;
+    float bias;
+    bool linearFiltering;
+};
+
 struct ViewerState {
     ViewerState();
 
@@ -144,7 +153,7 @@ struct ViewerState {
     bool showZYplane{true};
     bool showArbplane{true};
     bool showVpDecorations{true};
-    std::vector<bool> layerVisibility;
+    std::vector<LayerRenderSettings> layerRenderSettings;
     double meshAlphaFactor3d{1};
     double meshAlphaFactorSlicing{0.5};
     bool MeshPickingEnabled{true};
