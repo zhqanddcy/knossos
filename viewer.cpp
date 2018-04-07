@@ -963,11 +963,11 @@ void Viewer::run() {
         }
     }
 
-    window->forEachOrthoVPDo([](ViewportOrtho & vp) {
-        vp.update();
-    });
+//    window->forEachOrthoVPDo([](ViewportOrtho & vp) {
+//        vp.update();
+//    });
     window->viewport3D.get()->update();
-    window->updateTitlebar(); //display changes after filename
+//    window->updateTitlebar(); //display changes after filename
 }
 
 void Viewer::applyTextureFilterSetting(const QOpenGLTexture::Filter texFiltering) {
