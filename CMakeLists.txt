@@ -82,7 +82,7 @@ if(NOT BUILD_SHARED_LIBS) # try to force search for static libraries from here o
     set(CMAKE_FIND_LIBRARY_SUFFIXES .a .lib ${CMAKE_FIND_LIBRARY_SUFFIXES}) # prefer static (*.a) over import (*.dll.a) libraries
 endif()
 
-set(pythonqt Qt5Python27 CACHE STRING "PythonQt flavour to search for")
+set(pythonqt Qt5Python35 CACHE STRING "PythonQt flavour to search for")
 find_package(Boost 1.50 REQUIRED) # 1.50 added hash_value of std::tuple for Coordinate hash specialization
 find_package(OpenGL REQUIRED) # GLU
 find_package(${pythonqt} REQUIRED)
